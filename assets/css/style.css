@@ -4,6 +4,11 @@
     box-sizing: border-box;
     font-family: Roboto;
 }
+button{
+    background: 0;
+    border: 0;
+    cursor: pointer;
+}
 body{
     background-color: #fafafa;
 }
@@ -24,10 +29,12 @@ header {
 }
 main {
     margin: 146px auto 100px;
-    width: 1050px;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+.screen-1{
+    width: 1050px;
 }
 .no-quizzes {
     height: 181px;
@@ -142,28 +149,68 @@ main {
 .add-quizz {
     display: flex;
 }
-.form-01{
+.form-01 > button,
+.form-02 > button,
+.form-03 > button{
+    background: #EC362D;
+    border-radius: 15px;
+    border: 0;
+
+    height: 54px;
+    padding: 0 40px;
+    margin-top: 80px;
+
+    font-size: 21px;
+    color: #FFF5F4;
+}
+.form-01,
+.form-02,
+.form-03{
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.quizz-infos{
+.form-01 > h2,
+.form-02 > h2{
+    margin-bottom: 40px;
+}
+.form-02{
+    gap: 24px;
+}
+.question-closed{
+    width: 600px;
+
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+
+    display: flex;
+    justify-content: space-between;
+    padding: 25px 15px;
+}
+.question-closed ion-icon{
+    font-size: 26px;
+}
+.question-closed h2{
+    font-size: 20px;
+}
+
+.quizz-infos,
+.question{
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 10px;
 
-    margin: 40px 0 80px;
     padding: 20px;
     width: 600px;
 
     background-color: #fff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
 }
-.quizz-infos input{
+.quizz-infos input,
+.question input{
     width: 100%;
     height: 46px;
-    padding: 12px 0 12px 23px;
+    padding-left: 23px;
 
     border: 1px solid #D1D1D1;
     border-radius: 5px;
@@ -171,31 +218,34 @@ main {
 
     color: #BABABA;
 }
-.quizz-infos input::placeholder{
+.quizz-infos input::placeholder,
+.question input::placeholder{
     font-size: 19px;
     font-style: italic;
     color: #BABABA;
 }
-.quizz-infos div{
-    width: 100%;
-}
-.quizz-infos h2{
+.quizz-infos h3,
+.question h3{
     font-size: 16px;
     color: #EC362D;
     font-weight: normal;
     margin-top: 3px;
 }
-.screen-3 button{
-    background: #EC362D;
-    border-radius: 15px;
-    border: 0;
-
-    height: 54px;
-    padding: 0 40px;
-
-    font-size: 21px;
-    color: #FFF5F4;
+.question{
+    padding-top: 0;
 }
+.question h2{
+    font-size: 20px;
+    margin: 15px 0 10px;
+}
+.question > div{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+
 .validate-error{
     background: #FFE9E9;
 }
