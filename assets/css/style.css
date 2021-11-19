@@ -10,7 +10,7 @@ body{
 header {
     position: fixed;
     top: 0;
-    z-index: 1;
+    z-index: 2;
 
     width: 100%;
     height: 69px;
@@ -23,12 +23,12 @@ header {
     color: #fff;
 }
 main {
-    padding: 0 auto 100px;
+    padding-bottom: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    background-color: #e5e5e5;
+    background-color: #fafafa;
 }
 .no-quizzes {
     height: 181px;
@@ -223,7 +223,7 @@ main {
     margin-top: 69px;
 }
 
-.quizz-banner div{
+.quizz-banner>div{
     font-style: normal;
     font-size: 39px;
     line-height: 46px;
@@ -292,20 +292,42 @@ main {
     align-items: space-evenly;
 
     margin-bottom: 18px;
+
+    position: relative;
 }
 
-.answer img {
+.answer>img {
     height: 175px;
-    object-fit: cover;
-    object-position: top;
     margin-bottom: 8px;
+
+    object-position: center;
+    object-fit: cover;
 }
 
-.answer span {
+.fade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+
+    background-color: rgba(255, 255, 255, 0.70);
+
+
+}
+
+.answer>span {
     font-weight: 700;
     font-style: bold;
     font-size: 20px;
     line-height: 23px;
-    line-height: 100%;
-    vertical-align: center;
+}
+
+.answer>span.correct{
+    color: #009C22;
+}
+
+.answer>span.wrong{
+    color: #FF4B4B;
 }
