@@ -2,19 +2,111 @@ let screen1 = document.querySelector(".screen-1")
 let screen2 = document.querySelector(".screen-2")
 let screen3 = document.querySelector(".screen-3")
 
-let ulYourQuizzes = document.querySelectorAll(".your-quizzes li")
-let ulAllQuizzes = document.querySelectorAll(".all-quizzes li")
+let globalData =[];
 
-ulYourQuizzes.forEach( (element) => {
-    element.addEventListener("click", selectedQuizz);
-});
-ulAllQuizzes.forEach( (element) => {
-    element.addEventListener("click", selectedQuizz);
-});
+function listAllQuizzes() {
+    const getQuizzesPromise = axios.get("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes");
 
-function selectedQuizz(){
+    getQuizzesPromise.then((response)=>{
+        renderAllQuizzes(response);
+        globalData = response.data;
+    });
+
+    getQuizzesPromise.catch(treatError);
+}
+
+function renderAllQuizzes({data}) {
+    const containerAllQuizzes = document.querySelector(".all-quizzes ul");
+
+    data.forEach(({id, title, image})=>{
+        containerAllQuizzes.innerHTML += `
+        <li>
+          <div class="quizz-background" id="${id}">
+            ${title}
+          </div>
+        </li>
+        `
+        document.getElementById(`${id}`).style.background = `url(${image})`;
+    });
+
+    addClick();
+}
+
+function addClick() {
+    let ulYourQuizzes = document.querySelectorAll(".your-quizzes li")
+    let ulAllQuizzes = document.querySelectorAll(".all-quizzes li")
+    
+    ulYourQuizzes.forEach( (element) => {
+        element.addEventListener("click", selectedQuizz);
+    });
+    ulAllQuizzes.forEach( (element) => {
+        element.addEventListener("click", selectedQuizz);
+    });
+}
+
+function selectedQuizz(event){
     screen1.classList.add("none");
     screen2.classList.remove("none");
+    document.querySelector(".quizz-banner").classList.remove("none");
+
+    let selectedFromGlobal;
+
+    globalData.forEach((element)=>{
+        if (element.id == event.target.id){
+            selectedFromGlobal = element;
+        }
+    });
+
+    loadSelectedQuizz(selectedFromGlobal);
+}
+
+function loadSelectedQuizz(selectedObject){
+    console.log(selectedObject);
+    renderSelectedQuizz(selectedObject);
+}
+    
+function renderSelectedQuizz({id, image, levels, questions, title}){
+    // console.log(id);
+    // console.log(image);
+    // console.log(levels);
+    // console.log(questions);
+    // console.log(title);
+    const quizzContainer = document.querySelector(".quizz-container");
+    let i = 0;
+
+    questions.forEach(({title, color, answers})=>{
+       
+        quizzContainer.innerHTML += `
+            <div class="questions-wrapper">
+                <div class="questions-title">${title}</div>
+                <div class="answers-wrapper">
+
+                </div>
+            </div>
+        `
+        const titleHeader = document.querySelectorAll('.questions-title');
+        titleHeader[i].style.backgroundColor = `${color}`;
+
+        if(color==='#fff' || color==='#ffffff' || color==='rgb(255,255,255)') {
+            titleHeader[i].style.color = '#000';
+        }
+
+        const answersWrapper = document.querySelectorAll(".answers-wrapper");
+
+        answers.sort(getRandom);
+        console.log(answers);
+
+        answers.forEach(({text, image, isCorrectAnswer})=>{
+            answersWrapper[i].innerHTML += `
+                <div class="answer" id='${isCorrectAnswer}'>
+                    <img src="${image}">
+                    <span>${text}</span>
+                </div>
+            `
+        });
+
+        i++;
+    }); 
 }
 
 function createQuizz(){
@@ -55,3 +147,13 @@ function noneValidateError(info){
     info.children[0].classList.remove("validate-error")
     if(info.children.length === 2) info.children[1].remove()
 }
+
+function treatError(error){
+    console.log(error);
+}
+
+function getRandom(){
+    return Math.random() - 0.5;
+}
+
+listAllQuizzes();

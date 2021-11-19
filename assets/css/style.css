@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Roboto;
+    font-family: 'Roboto', sans-serif;
 }
 body{
     background-color: #fafafa;
@@ -23,11 +23,12 @@ header {
     color: #fff;
 }
 main {
-    margin: 146px auto 100px;
-    width: 1050px;
+    padding: 0 auto 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    background-color: #e5e5e5;
 }
 .no-quizzes {
     height: 181px;
@@ -185,6 +186,12 @@ main {
     font-weight: normal;
     margin-top: 3px;
 }
+
+.screen-1 {
+    margin-top: 146px;
+    width: 1050px;
+}
+
 .screen-3 button{
     background: #EC362D;
     border-radius: 15px;
@@ -202,4 +209,103 @@ main {
 
 .none {
     display: none;
+}
+
+.quizz-banner{
+    height: 227px;
+    width: 100%;
+
+    position: relative;
+
+    background-image: url("https://criadoresid.com/wp-content/uploads/2016/11/hogwarts-real.jpg");
+    background-size: cover;
+
+    margin-top: 69px;
+}
+
+.quizz-banner div{
+    font-style: normal;
+    font-size: 39px;
+    line-height: 46px;
+    color: #fff;
+
+    background-color: rgba(0, 0, 0, 0.57);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.questions-wrapper {
+    width: 760px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background-color: #fff;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.05);
+
+    padding: 28px 35px;
+    margin: 42px 0;
+}
+
+.questions-title {
+    width: 690px;
+    height: 138px;
+
+    margin-bottom: 20px;
+
+    font-weight: 700;
+    font-style: normal;
+    font-size: 23px;
+    line-height: 27px; 
+    color: #fff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.answers-wrapper {
+    width: 690px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.answer {
+    width: 330px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: space-evenly;
+
+    margin-bottom: 18px;
+}
+
+.answer img {
+    height: 175px;
+    object-fit: cover;
+    object-position: top;
+    margin-bottom: 8px;
+}
+
+.answer span {
+    font-weight: 700;
+    font-style: bold;
+    font-size: 20px;
+    line-height: 23px;
+    line-height: 100%;
+    vertical-align: center;
 }
