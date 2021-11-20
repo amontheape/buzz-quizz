@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Exercício</title>
+    <title>Buzz Quizz</title>
+
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,140 +13,62 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap"
       rel="stylesheet"
     />
+
     <script defer src="assets/js/script.js"></script>
-    <script defer src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+
   </head>
+
   <body>
+
     <header>
       <h1>BuzzQuizz</h1>
     </header>
+
+    <div class="quizz-banner none">
+        <div>
+            Título teste de um Quizz
+        </div>
+    </div>
+
     <main>
-      <div class="screen-1 none">
+      <div class="screen-1">
         <div class="no-quizzes ">
           <h2>Você não criou nenhum quizz ainda :(</h2>
           <button onclick="createQuizz()">Criar Quizz</button>
         </div>
+
         <div class="your-quizzes none">
           <div class="add-quizz">
             <h2>Seus quizzes</h2>
             <button onclick="createQuizz()"><ion-icon name="add-circle"></ion-icon></button>
           </div>
           <ul>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
+
           </ul>
         </div>
+
         <div class="all-quizzes">
           <h2>Todos os quizzes</h2>
           <ul>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
-            <li><div class="quizz-background">Acerte os personagens corretos dos Simpsons e prove seu amor!</div></li>
+            
           </ul>
         </div>
+
       </div>
-      <div class="screen-2 none"></div>
-      <div class="screen-3">
-          <div class="form-01 none">
-              <h2>Comece pelo começo</h2>
-              <div class="quizz-infos">
-                <div class="info-1"><input type="text" placeholder="Título do seu quizz"></div>
-                <div class="info-2"><input type="text" placeholder="URL da imagem do seu quizz"></div>
-                <div class="info-3"><input type="text" placeholder="Quantidade de perguntas do quizz"></div>
-                <div class="info-4"><input type="text" placeholder="Quantidade de níveis do quizz"></div>
-              </div>
-              <button onclick="validateForm01()">Prosseguir pra criar perguntas</button>
-          </div>
-          <div class="form-02">
-            <h2>Crie suas perguntas</h2>
-            <div class="question-closed q01 none">
-                <h2>Pergunta 1</h2>
-                <button onclick="selectedQuestion(this)"><ion-icon name="create-outline"></ion-icon></button>
-            </div>
-            <div class="question q01">
-                <div class="info-question">
-                    <h2>Pergunta 1</h2>
-                    <div class="text"><input type="text" placeholder="Texto da pergunta"></div>
-                    <div class="color"><input type="text" placeholder="Cor de fundo da pergunta"></div>
-                </div>
-                <div class="correct-answer">
-                    <h2>Resposta correta</h2>
-                    <div class="answer a01"><input type="text" placeholder="Resposta correta"></div>
-                    <div class="answer-img i01"><input type="text" placeholder="URL da imagem"></div>
-                </div>
-                <div class="incorrect-answers">
-                    <h2>Respostas incorretas</h2>
-                    <div class="answer a02"><input type="text" placeholder="Resposta incorreta 1"></div>
-                    <div class="answer-img i02"><input type="text" placeholder="URL da imagem 1"></div>
-                    <div class="answer a03"><input type="text" placeholder="Resposta incorreta 2"></div>
-                    <div class="answer-img i03"><input type="text" placeholder="URL da imagem 2"></div>
-                    <div class="answer a04"><input type="text" placeholder="Resposta incorreta 3"></div>
-                    <div class="answer-img i04"><input type="text" placeholder="URL da imagem 3"></div>
-                </div>
-            </div>
-            <div class="question-closed q02">
-                <h2>Pergunta 2</h2>
-                <button onclick="selectedQuestion(this)"><ion-icon name="create-outline"></ion-icon></button>
-            </div>
-            <div class="question q02 none">
-                <div class="info-question">
-                    <h2>Pergunta 2</h2>
-                    <div class="text"><input type="text" placeholder="Texto da pergunta"></div>
-                    <div class="color"><input type="text" placeholder="Cor de fundo da pergunta"></div>
-                </div>
-                <div class="correct-answer">
-                    <h2>Resposta correta</h2>
-                    <div class="answer a01"><input type="text" placeholder="Resposta correta"></div>
-                    <div class="answer-img i01"><input type="text" placeholder="URL da imagem"></div>
-                </div>
-                <div class="incorrect-answers">
-                    <h2>Respostas incorretas</h2>
-                    <div class="answer a02"><input type="text" placeholder="Resposta incorreta 1"></div>
-                    <div class="answer-img i02"><input type="text" placeholder="URL da imagem 1"></div>
-                    <div class="answer a03"><input type="text" placeholder="Resposta incorreta 2"></div>
-                    <div class="answer-img i03"><input type="text" placeholder="URL da imagem 2"></div>
-                    <div class="answer a04"><input type="text" placeholder="Resposta incorreta 3"></div>
-                    <div class="answer-img i04"><input type="text" placeholder="URL da imagem 3"></div>
-                </div>
-            </div>
-            <div class="question-closed q03">
-                <h2>Pergunta 3</h2>
-                <button onclick="selectedQuestion(this)"><ion-icon name="create-outline"></ion-icon></button>
-            </div>
-            <div class="question q03 none">
-                <div class="info-question">
-                    <h2>Pergunta 3</h2>
-                    <div class="text"><input type="text" placeholder="Texto da pergunta"></div>
-                    <div class="color"><input type="text" placeholder="Cor de fundo da pergunta"></div>
-                </div>
-                <div class="correct-answer">
-                    <h2>Resposta correta</h2>
-                    <div class="answer a01"><input type="text" placeholder="Resposta correta"></div>
-                    <div class="answer-img i01"><input type="text" placeholder="URL da imagem"></div>
-                </div>
-                <div class="incorrect-answers">
-                    <h2>Respostas incorretas</h2>
-                    <div class="answer a02"><input type="text" placeholder="Resposta incorreta 1"></div>
-                    <div class="answer-img i02"><input type="text" placeholder="URL da imagem 1"></div>
-                    <div class="answer a03"><input type="text" placeholder="Resposta incorreta 2"></div>
-                    <div class="answer-img i03"><input type="text" placeholder="URL da imagem 2"></div>
-                    <div class="answer a04"><input type="text" placeholder="Resposta incorreta 3"></div>
-                    <div class="answer-img i04"><input type="text" placeholder="URL da imagem 3"></div>
-                </div>
-            </div>
-            <button onclick="validateForm02()">Prosseguir pra criar níveis</button>
-          </div>
-            
-          <div class="form-03 none"></div>
+      
+      <div class="screen-2 none">
+        <div class="quizz-container"></div>
       </div>
+
+      <div class="screen-3 none">
+        <div class="form-01"></div>
+        <div class="form-02 none"></div>
+        <div class="form-03 none"></div>
+      </div>
+
     </main>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
   </body>
 </html>
