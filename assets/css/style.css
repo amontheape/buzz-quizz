@@ -242,7 +242,7 @@ main {
     left: 0;
 }
 
-.questions-wrapper {
+.questions-wrapper, .conclusion-wrapper {
     width: 760px;
 
     display: flex;
@@ -273,7 +273,26 @@ main {
     align-items: center;
 }
 
-.answers-wrapper {
+.conclusion-title {
+    width: 690px;
+    height: 100px;
+
+    margin-bottom: 20px;
+
+    font-weight: 700;
+    font-style: normal;
+    font-size: 23px;
+    line-height: 27px; 
+    color: #fff;
+    background-color: #EC362D;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.answers-wrapper, .img-description-wrapper {
     width: 690px;
 
     display: flex;
@@ -330,4 +349,27 @@ main {
 
 .answer>span.wrong{
     color: #FF4B4B;
+}
+
+.img-description-wrapper>img {
+    width: 330px;
+    height: 248px;
+
+    object-position: center;
+    object-fit: cover;
+}
+
+.img-description-wrapper>p {
+    font-weight: 700;
+    font-style: normal;
+    font-size: 19px;
+    line-height: 25px;
+    text-align: left;
+
+    width: 330px;
+    height: 248px;
+    word-break: break-word;
+
+    display: flex;
+    align-items: flex-start;
 }

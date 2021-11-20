@@ -2,9 +2,8 @@ let screen1 = document.querySelector(".screen-1")
 let screen2 = document.querySelector(".screen-2")
 let screen3 = document.querySelector(".screen-3")
 
-const headerHeight = 186;
-
 let globalData =[];
+let selectedFromGlobal;
 
 function listAllQuizzes() {
     const getQuizzesPromise = axios.get("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes");
@@ -54,8 +53,6 @@ function selectedQuizz(event){
 
     quizzBanner.classList.remove("none");
 
-    let selectedFromGlobal;
-
     globalData.forEach((element)=>{
         if (element.id == event.target.id){
             selectedFromGlobal = element;
@@ -70,9 +67,10 @@ function renderSelectedQuizz({id, image, levels, questions, title}){
     quizzBanner.style.backgroundImage = `url(${image})`;
     document.querySelector(".quizz-banner div").innerHTML = `${title}`;
 
-    windowScroller(338);
+    windowScroller(0);
 
     const quizzContainer = document.querySelector(".quizz-container");
+
     let i = 0;
 
     questions.forEach(({title, color, answers})=>{
@@ -110,10 +108,14 @@ function renderSelectedQuizz({id, image, levels, questions, title}){
     });
     
     document.querySelectorAll(".answer").forEach((answer)=>answer.addEventListener('click', selectingAnswer));
+
 }
 
 function selectingAnswer(event){
     const selectedAnswer = event.currentTarget;
+
+    checkAnswer(selectedAnswer);
+
     const wrapperIndex = selectedAnswer.parentNode.classList[1][7];
     
     document.querySelectorAll(`.wrapper${wrapperIndex} .answer`).forEach((answer)=>{
@@ -137,6 +139,63 @@ function selectingAnswer(event){
         windowScroller(wrapperPos+wrapperHeight);
         },2000);
     }
+}
+
+let rightAnswers = 0, wrongAnswers = 0;
+
+function checkAnswer(answer) {
+    if(answer.id === 'true') {
+        rightAnswers++;
+    } else { wrongAnswers++; }
+
+    console.log(answer.id);
+    console.log(`respostas corretas: ${rightAnswers}`);
+    console.log(`respostas incorretas: ${wrongAnswers}`);
+
+    concludeQuizz(rightAnswers, wrongAnswers, selectedFromGlobal);
+}
+
+function concludeQuizz(wins, losses, {questions, levels}){
+    const totalAnswers = wins + losses;
+
+    let adequateLevelindex;
+
+    if (totalAnswers === questions.length){
+        let accuracy = Math.ceil((wins/totalAnswers)*100).toFixed();
+
+        console.log(`percentual de acerto: ${accuracy}`);
+
+        levels.forEach((level)=>{
+            if( accuracy >= Number(level.minValue)){
+                adequateLevelindex = levels.indexOf(level); 
+            }
+        });
+
+        console.log(Number(levels[adequateLevelindex].minValue));
+        
+        document.querySelector(".quizz-container").innerHTML += `
+            <div class="conclusion-wrapper">
+                <div class="conclusion-title">${accuracy}% de acerto: ${levels[adequateLevelindex].title}</div>
+                <div class="img-description-wrapper">
+                    <img src="${levels[adequateLevelindex].image}">
+                    <p>${levels[adequateLevelindex].text}</p>
+                </div>
+            </div>
+        `
+        // insert items bellow after validating tests
+        // <button>Reiniciar Quizz</button>
+        // <span>Voltar pra home</span>
+
+        setTimeout(()=>{
+            const wrapperPos = document.querySelector(".conclusion-wrapper").offsetTop;
+            const wrapperHeight = document.querySelector(".conclusion-wrapper").offsetHeight;
+            windowScroller(wrapperPos + wrapperHeight);
+        }, 2000);
+    }
+}
+
+function resetQuizz(){
+
 }
 
 function createQuizz(){
