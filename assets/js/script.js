@@ -4,20 +4,19 @@ let screen3 = document.querySelector(".screen-3")
 let form01 = document.querySelector(".form-01")
 let form02 = document.querySelector(".form-02")
 let form03 = document.querySelector(".form-03")
+const quizzBanner = document.querySelector(".quizz-banner");
 
 let globalData =[];
-
-
-
+let selectedFromGlobal;
+let rightAnswers = 0, wrongAnswers = 0;
 let currentOpenQuestion;
-
+let objQuestions = [];
 let createQuizzObj = {
     title: "",
     image: "",
     questions: [],
     levels: []
 }
-let objQuestions = [];
 
 
 function listAllQuizzes() {
@@ -63,9 +62,8 @@ function addClick() {
 function selectedQuizz(event){
     screen1.classList.add("none");
     screen2.classList.remove("none");
-    document.querySelector(".quizz-banner").classList.remove("none");
 
-    let selectedFromGlobal;
+    quizzBanner.classList.remove("none");
 
     globalData.forEach((element)=>{
         if (element.id == event.target.id){
@@ -73,21 +71,18 @@ function selectedQuizz(event){
         }
     });
 
-    loadSelectedQuizz(selectedFromGlobal);
-}
-
-function loadSelectedQuizz(selectedObject){
-    console.log(selectedObject);
-    renderSelectedQuizz(selectedObject);
+    renderSelectedQuizz(selectedFromGlobal);
 }
     
 function renderSelectedQuizz({id, image, levels, questions, title}){
-    // console.log(id);
-    // console.log(image);
-    // console.log(levels);
-    // console.log(questions);
-    // console.log(title);
+   
+    quizzBanner.style.backgroundImage = `url(${image})`;
+    document.querySelector(".quizz-banner div").innerHTML = `${title}`;
+
+    windowScroller(0);
+
     const quizzContainer = document.querySelector(".quizz-container");
+
     let i = 0;
 
     questions.forEach(({title, color, answers})=>{
@@ -95,7 +90,7 @@ function renderSelectedQuizz({id, image, levels, questions, title}){
         quizzContainer.innerHTML += `
             <div class="questions-wrapper">
                 <div class="questions-title">${title}</div>
-                <div class="answers-wrapper">
+                <div class="answers-wrapper wrapper${i}">
 
                 </div>
             </div>
@@ -110,19 +105,107 @@ function renderSelectedQuizz({id, image, levels, questions, title}){
         const answersWrapper = document.querySelectorAll(".answers-wrapper");
 
         answers.sort(getRandom);
-        console.log(answers);
 
         answers.forEach(({text, image, isCorrectAnswer})=>{
             answersWrapper[i].innerHTML += `
                 <div class="answer" id='${isCorrectAnswer}'>
-                    <img src="${image}">
+                    <img src='${image}'/>
                     <span>${text}</span>
+                    <div class="fade none"></div>
                 </div>
             `
         });
 
         i++;
-    }); 
+    });
+    
+    document.querySelectorAll(".answer").forEach((answer)=>answer.addEventListener('click', selectingAnswer));
+
+}
+
+function selectingAnswer(event){
+    const selectedAnswer = event.currentTarget;
+
+    checkAnswer(selectedAnswer);
+
+    const wrapperIndex = selectedAnswer.parentNode.classList[1][7];
+    
+    document.querySelectorAll(`.wrapper${wrapperIndex} .answer`).forEach((answer)=>{
+        answer.removeEventListener('click', selectingAnswer);
+
+        if (answer !== selectedAnswer) {
+            answer.childNodes[5].classList.remove('none');
+        }
+        
+        if (answer.id === 'true'){
+            answer.childNodes[3].classList.add('correct');
+        } else {
+            answer.childNodes[3].classList.add('wrong');
+        }
+    });
+
+    if (wrapperIndex < 2) {
+        setTimeout(()=>{
+        const wrapperPos = selectedAnswer.parentNode.offsetTop;
+        const wrapperHeight = selectedAnswer.parentNode.offsetHeight;
+        windowScroller(wrapperPos+wrapperHeight);
+        },2000);
+    }
+}
+
+function checkAnswer(answer) {
+    if(answer.id === 'true') {
+        rightAnswers++;
+    } else { wrongAnswers++; }
+
+    console.log(answer.id);
+    console.log(`respostas corretas: ${rightAnswers}`);
+    console.log(`respostas incorretas: ${wrongAnswers}`);
+
+    concludeQuizz(rightAnswers, wrongAnswers, selectedFromGlobal);
+}
+
+function concludeQuizz(wins, losses, {questions, levels}){
+    const totalAnswers = wins + losses;
+
+    let adequateLevelindex;
+
+    if (totalAnswers === questions.length){
+        let accuracy = Math.ceil((wins/totalAnswers)*100).toFixed();
+
+        console.log(`percentual de acerto: ${accuracy}`);
+
+        levels.forEach((level)=>{
+            if( accuracy >= Number(level.minValue)){
+                adequateLevelindex = levels.indexOf(level); 
+            }
+        });
+
+        console.log(Number(levels[adequateLevelindex].minValue));
+        
+        document.querySelector(".quizz-container").innerHTML += `
+            <div class="conclusion-wrapper">
+                <div class="conclusion-title">${accuracy}% de acerto: ${levels[adequateLevelindex].title}</div>
+                <div class="img-description-wrapper">
+                    <img src="${levels[adequateLevelindex].image}">
+                    <p>${levels[adequateLevelindex].text}</p>
+                </div>
+            </div>
+        `
+        // insert items bellow after validating tests
+        // <button>Reiniciar Quizz</button>
+        // <span>Voltar pra home</span>
+
+        setTimeout(()=>{
+            const wrapperPos = document.querySelector(".conclusion-wrapper").offsetTop;
+            const wrapperHeight = document.querySelector(".conclusion-wrapper").offsetHeight;
+            windowScroller(wrapperPos + wrapperHeight);
+        }, 2000);
+    }
+}
+
+function resetQuizz(){
+
 }
 
 function createQuizz(){
@@ -350,17 +433,20 @@ function nextForm(current, next){
     next.classList.remove("none")
 }
 
-
-
-
-
-
 function treatError(error){
     console.log(error);
 }
 
 function getRandom(){
     return Math.random() - 0.5;
+}
+
+listAllQuizzes();
+function windowScroller(position) {
+    window.scrollTo({
+        top: position,
+        behavior: 'smooth'
+    });
 }
 
 listAllQuizzes();
