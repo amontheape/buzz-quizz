@@ -54,32 +54,35 @@ function renderAllQuizzes({data}) {
     data.forEach(({id, title, image})=>{
 
         if (quizzesLocalStorage !== null && quizzesLocalStorage.includes(id)) {
-            console.log('rendering quizz from local storage');
             noQuizzesDiv.classList.add('none');
             yourQuizzesDiv.classList.remove('none');
 
             containerYourQuizzes.innerHTML += `
             <li id="${id}" data-identifier="quizz-card">
-            <div class="quizz-background" >
-                ${title}
-            </div>
+                <div class="quizz-background" >
+                    ${title}
+                </div>
+                <div class="quizz-edits">
+                    <button onclick="editQuizz(this)"><ion-icon name="create-outline"></ion-icon></button>
+                    <button onclick="removeQuizz(this)"><ion-icon name="trash-outline"></ion-icon></button>
+                </div>
             </li>
             `
         } else {
-            console.log('rendering quizz from server');
             containerAllQuizzes.innerHTML += `
             <li id="${id}" data-identifier="quizz-card">
-            <div class="quizz-background">
-                ${title}
-            </div>
+                <div class="quizz-background">
+                    ${title}
+                </div>
             </li>
             `
         }
         document.getElementById(`${id}`).style.background = `url(${image})`;
         document.getElementById(`${id}`).style.backgroundSize = "cover";
     });
-
+    
     addClick();
+    
 }
 
 function addClick() {
@@ -95,6 +98,7 @@ function addClick() {
 }
 
 function selectedQuizz(event){
+    if(!event.target.classList.contains("quizz-background") && !event.target.classList.contains("button-quizz-done")) return;
     let elementId = event.target.parentNode.id;
     screen3.classList.add("none")
     form04.classList.add("none")
@@ -102,18 +106,13 @@ function selectedQuizz(event){
     screen2.classList.remove("none");
 
     quizzBanner.classList.remove("none");
-    console.log(event)
-    console.log(event.target.id)
     if(event.target.localName === "button") elementId = event.target.previousElementSibling.id
-
-    console.log(elementId)
 
     globalData.forEach((element)=>{
         if (element.id == elementId){
             selectedFromGlobal = element;
         }
     });
-    console.log(selectedFromGlobal)
 
     renderSelectedQuizz(selectedFromGlobal);
 }
@@ -525,7 +524,6 @@ function validateForm03(){
         createQuizzObj.levels = objLevels;
         const promess = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", createQuizzObj)
         promess.then(promess.then( (answer) =>{
-            console.log(answer)
             if(quizzesLocalStorage === null) parseQuizzesLocalStorage = []
             parseQuizzesLocalStorage.push(answer.data.id)
             quizzesLocalStorage = JSON.stringify(parseQuizzesLocalStorage)
@@ -539,14 +537,10 @@ function validateForm03(){
         
             let quizzesKeys = localStorage.getItem("quizzesKeys");
             let quizzes = localStorage.getItem("quizzes");
-            console.log(quizzes)
-            console.log(quizzesKeys)
             listAllQuizzes()
             nextForm(form03, form04)
             renderForm4(answer.data.id)
         }))
-        console.log(createQuizzObj)
-        console.log("enviou")
         
     }
     objLevels = []
@@ -590,7 +584,6 @@ function validadeLevels(element){
     }
 }
 function renderForm4(id){
-    console.log(createQuizzObj)
     
     
     form04.innerHTML = `
@@ -634,10 +627,6 @@ function nextForm(current, next){
     next.classList.remove("none")
 }
 
-function treatError(error){
-    console.log(error);
-}
-
 function getRandom(){
     return Math.random() - 0.5;
 }
@@ -649,4 +638,29 @@ function windowScroller(position) {
     });
 }
 
+function editQuizz(element){
+    console.log(element.parentNode.parentNode.id)
+}
+
+function removeQuizz(element){
+    let r = confirm("Tem certeza ?");
+    if (!r) return
+
+    let quizzId = parseInt(element.parentNode.parentNode.id)
+    let index = parseQuizzesLocalStorage.indexOf(quizzId)
+    let quizzKey
+    if(index !== -1){
+        quizzKey = parseQuizzesKeysLocalStorage[index]
+    }
+    
+    const promess = axios.delete(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizzId}`, {
+        headers:{
+            "Secret-Key": `${quizzKey}` 
+        }
+    })
+    promess.then(()=>{
+        window.location.reload();
+    })
+    
+}
 listAllQuizzes();

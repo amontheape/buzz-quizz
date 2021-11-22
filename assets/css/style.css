@@ -74,7 +74,8 @@ main {
 .your-quizzes {
     margin-bottom: 48px;
 }
-.your-quizzes button {
+.your-quizzes > button,
+.add-quizz button {
     margin-left: 17px;
     border-radius: 50%;
     border: 0;
@@ -143,6 +144,22 @@ main {
 
 .add-quizz {
     display: flex;
+}
+.quizz-edits{
+    position: absolute;
+    top: 10px;
+    right: 0;
+    z-index: 1;
+    background: #EC362D;
+    border-radius: 10px 0px 0px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+.quizz-edits ion-icon{
+    font-size: 25px;
+    color: #fff;
 }
 .form-01 > button,
 .form-02 > button,

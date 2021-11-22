@@ -28,12 +28,12 @@
 
     <main>
       <div class="screen-1">
-        <div class="no-quizzes ">
+        <div class="no-quizzes">
           <h2>Você não criou nenhum quizz ainda :(</h2>
           <button onclick="createQuizz()" data-identifier="create-quizz">Criar Quizz</button>
         </div>
 
-        <div class="your-quizzes none">
+        <div class="your-quizzes none" data-identifier="quizz-card">
           <div class="add-quizz">
             <h2>Seus quizzes</h2>
             <button onclick="createQuizz()" data-identifier="create-quizz"><ion-icon name="add-circle"></ion-icon></button>
@@ -43,7 +43,7 @@
           </ul>
         </div>
 
-        <div class="all-quizzes">
+        <div class="all-quizzes" data-identifier="general-quizzes">
           <h2>Todos os quizzes</h2>
           <ul>
             
