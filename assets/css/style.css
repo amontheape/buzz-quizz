@@ -106,7 +106,8 @@ main {
     justify-content: center;
 }
 .your-quizzes li,
-.all-quizzes li {
+.all-quizzes li,
+.quizz-done {
     list-style: none;
     cursor: pointer;
 
@@ -126,21 +127,17 @@ main {
     right: 0;
     bottom: 0;
     left: 0;
-
-    padding: 0 20px 10px 18px;
+    /* padding: 0 20px 10px 18px; */
     border-radius: 5px;
-
     background: linear-gradient(
         180deg,
         rgba(255, 255, 255, 0) 0%,
         rgba(0, 0, 0, 0.5) 64.58%,
         #000000 100%
     );
-
     color: #fff;
     font-size: 19px;
     font-weight: 400;
-
     display: flex;
     align-items: flex-end;
 }
@@ -150,7 +147,8 @@ main {
 }
 .form-01 > button,
 .form-02 > button,
-.form-03 > button{
+.form-03 > button,
+.form-04 > button{
     background: #EC362D;
     border-radius: 15px;
     border: 0;
@@ -162,9 +160,19 @@ main {
     font-size: 21px;
     color: #FFF5F4;
 }
+.form-04 > button{
+    margin-top: 45px;
+}
+.form-04 button:last-child{
+    margin-top: 0px;
+
+    color: #818181;
+    background: 0;
+}
 .form-01,
 .form-02,
-.form-03{
+.form-03,
+.form-04{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -172,8 +180,13 @@ main {
 }
 .form-01 > h2,
 .form-02 > h2,
-.form-03 > h2{
+.form-03 > h2,
+.form-04 > h2{
     margin-bottom: 40px;
+}
+.form-04 > div {
+    width: 500px;
+    height: 266px;
 }
 .question-closed,
 .level-closed{

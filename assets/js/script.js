@@ -4,7 +4,15 @@ let screen3 = document.querySelector(".screen-3")
 let form01 = document.querySelector(".form-01")
 let form02 = document.querySelector(".form-02")
 let form03 = document.querySelector(".form-03")
+let form04 = document.querySelector(".form-04")
 const quizzBanner = document.querySelector(".quizz-banner");
+
+let quizzesLocalStorage = localStorage.getItem("quizzes");
+let parseQuizzesLocalStorage = JSON.parse(`${quizzesLocalStorage}`);
+
+let quizzesKeysLocalStorage = localStorage.getItem("quizzesKeys");
+let parseQuizzesKeysLocalStorage = JSON.parse(`${quizzesKeysLocalStorage}`);
+
 
 let globalData =[];
 let selectedFromGlobal;
@@ -35,6 +43,7 @@ function listAllQuizzes() {
 
 function renderAllQuizzes({data}) {
     const containerAllQuizzes = document.querySelector(".all-quizzes ul");
+    containerAllQuizzes.innerHTML = ""
 
     data.forEach(({id, title, image})=>{
         containerAllQuizzes.innerHTML += `
@@ -214,6 +223,7 @@ function resetQuizz(){
 function createQuizz(){
     screen1.classList.add("none");
     screen3.classList.remove("none");
+    form01.classList.remove("none")
     renderForm1()
 }
 function renderForm1(){
@@ -342,7 +352,6 @@ function validateForm02(){
     });
     createQuizzObj.questions = objQuestions;
     objQuestions = []
-    console.log(createQuizzObj)
 
     if(!document.querySelector(".validate-error")){
         nextForm(form02, form03)
@@ -367,12 +376,13 @@ function validadeQuestions(element){
         noneValidateError(questionText.parentNode)
         objQuestions[objQuestions.length-1].title = questionText.value
     }
-
-    if(!/^#([0-9A-F]{3}){1,2}$/i.test(questionColor.value)) validateError(questionColor.parentNode, "<h3>A cor deve estar em forato hexadecimal</h3>", questionColor.value)
-    else {
-        noneValidateError(questionColor.parentNode)
-        objQuestions[objQuestions.length-1].color = questionColor.value
-    }
+    if(questionColor.value.length === 7){
+        if(!/^#([0-9A-F]{3}){1,2}$/i.test(questionColor.value)) validateError(questionColor.parentNode, "<h3>A cor deve estar em forato hexadecimal</h3>", questionColor.value)
+        else {
+            noneValidateError(questionColor.parentNode)
+            objQuestions[objQuestions.length-1].color = questionColor.value
+        }
+    }else validateError(questionColor.parentNode, "<h3>A cor deve estar em forato hexadecimal</h3>", questionColor.value)
 
     for(let i = 0; i < questionAnswers.length; i ++){
         let pair = false;
@@ -467,9 +477,35 @@ function validateForm03(){
     allLevels.forEach((element) => {
         validadeLevels(element)
     });
-    if(!form03.querySelector(".validate-error")) createQuizzObj.levels = objLevels;
+    if(!form03.querySelector(".validate-error")) {
+        createQuizzObj.levels = objLevels;
+        const promess = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", createQuizzObj)
+        promess.then(promess.then( (answer) =>{
+            console.log(answer)
+            if(quizzesLocalStorage === null) parseQuizzesLocalStorage = []
+            parseQuizzesLocalStorage.push(answer.data.id)
+            quizzesLocalStorage = JSON.stringify(parseQuizzesLocalStorage)
+        
+            if(quizzesKeysLocalStorage === null) parseQuizzesKeysLocalStorage = []
+            parseQuizzesKeysLocalStorage.push(answer.data.key)
+            quizzesKeysLocalStorage = JSON.stringify(parseQuizzesKeysLocalStorage)
+            
+            localStorage.setItem("quizzes", quizzesLocalStorage);
+            localStorage.setItem("quizzesKeys", quizzesKeysLocalStorage);
+        
+            let quizzesKeys = localStorage.getItem("quizzesKeys");
+            let quizzes = localStorage.getItem("quizzes");
+            console.log(quizzes)
+            console.log(quizzesKeys)
+            listAllQuizzes()
+            nextForm(form03, form04)
+            renderForm4(answer.data.id)
+        }))
+        console.log(createQuizzObj)
+        console.log("enviou")
+        
+    }
     objLevels = []
-    console.log(createQuizzObj)
 }
 function validadeLevels(element){
     let levelIndex = parseInt(element.id[2]-1);
@@ -491,7 +527,7 @@ function validadeLevels(element){
     if(!validURL(levelImg.value)) validateError(levelImg.parentNode, "<h3>O valor informado não é uma URL válida</h3>", levelImg.value)
     else noneValidateError(levelImg.parentNode)
     
-    if(levelDesc.value < 30) validateError(levelDesc.parentNode, "<h3>A descrição deve ter no mínimo 30 caracteres</h3>", levelDesc.value)
+    if(levelDesc.value.length < 30) validateError(levelDesc.parentNode, "<h3>A descrição deve ter no mínimo 30 caracteres</h3>", levelDesc.value)
     else noneValidateError(levelDesc.parentNode)
 
     if(levelIndex === parseInt(createQuizzObj.levels.length)-1 && validateMinError){
@@ -508,6 +544,32 @@ function validadeLevels(element){
             minValue: levelMin.value
         })
     }
+}
+function renderForm4(id){
+    console.log(createQuizzObj)
+    
+    form04.innerHTML = `
+        <h2>Seus quizz está pronto!</h2>
+        <div class="quizz-done">
+          <div class="quizz-background" id="${id}">
+            ${createQuizzObj.title}
+          </div>
+        </div>
+        <button class="button-quizz-done">Acessar Quizz</button>
+        <button onclick="home()">Voltar para home</button>
+    `
+    document.querySelector(".quizz-done").style.background = `url("${createQuizzObj.image}")`
+    document.querySelector(".quizz-done").style.backgroundSize = "cover"
+
+    let quizzDone = form04.querySelector(".quizz-done")
+    let buttonQuizzDone = form04.querySelector(".button-quizz-done")
+    quizzDone.addEventListener("click", selectedQuizz);
+    buttonQuizzDone.addEventListener("click", selectedQuizz);
+}
+function home(){
+    form04.classList.add("none")
+    screen3.classList.add("none")
+    screen1.classList.remove("none")
 }
 function validateError(info, error, value){
     if(info.children.length === 1) info.innerHTML += error; 
