@@ -44,17 +44,40 @@ function listAllQuizzes() {
 
 function renderAllQuizzes({data}) {
     const containerAllQuizzes = document.querySelector(".all-quizzes ul");
-    containerAllQuizzes.innerHTML = ""
+    const containerYourQuizzes = document.querySelector(".your-quizzes ul");
+    const noQuizzesDiv = document.querySelector(".no-quizzes");
+    const yourQuizzesDiv = document.querySelector(".your-quizzes");
+
+    containerAllQuizzes.innerHTML = "";
+    containerYourQuizzes.innerHTML = "";
 
     data.forEach(({id, title, image})=>{
-        containerAllQuizzes.innerHTML += `
-        <li>
-          <div class="quizz-background" id="${id}">
-            ${title}
-          </div>
-        </li>
-        `
-        document.getElementById(`${id}`).style.background = `url(${image})`;
+
+        if (quizzesLocalStorage !== null && quizzesLocalStorage.includes(id)) {
+            console.log('rendering quizz from local storage');
+            noQuizzesDiv.classList.add('none');
+            yourQuizzesDiv.classList.remove('none');
+
+            containerYourQuizzes.innerHTML += `
+            <li>
+            <div class="quizz-background" id="${id}">
+                ${title}
+            </div>
+            </li>
+            `
+            document.getElementById(`${id}`).style.background = `url(${image})`;
+
+        } else {
+            console.log('rendering quizz from server');
+            containerAllQuizzes.innerHTML += `
+            <li>
+            <div class="quizz-background" id="${id}">
+                ${title}
+            </div>
+            </li>
+            `
+            document.getElementById(`${id}`).style.background = `url(${image})`;
+        }
     });
 
     addClick();
@@ -213,7 +236,6 @@ function concludeQuizz(wins, losses, {questions, levels}){
 }
 
 function resetQuizz(){
-    console.log('testando');
     rightAnswers = 0;
     wrongAnswers = 0;
 
@@ -569,7 +591,7 @@ function renderForm4(id){
           </div>
         </div>
         <button class="button-quizz-done">Acessar Quizz</button>
-        <button onclick="home()">Voltar para home</button>
+        <button onclick="window.location.reload()">Voltar para home</button>
     `
     document.querySelector(".quizz-done").style.background = `url("${createQuizzObj.image}")`
     document.querySelector(".quizz-done").style.backgroundSize = "cover"
@@ -579,11 +601,11 @@ function renderForm4(id){
     quizzDone.addEventListener("click", selectedQuizz);
     buttonQuizzDone.addEventListener("click", selectedQuizz);
 }
-function home(){
-    form04.classList.add("none")
-    screen3.classList.add("none")
-    screen1.classList.remove("none")
-}
+// function home(){
+//     form04.classList.add("none")
+//     screen3.classList.add("none")
+//     screen1.classList.remove("none")
+// }
 function validateError(info, error, value){
     if(info.children.length === 1) info.innerHTML += error; 
     info.children[0].classList.add("validate-error")
