@@ -5,6 +5,7 @@ let form01 = document.querySelector(".form-01")
 let form02 = document.querySelector(".form-02")
 let form03 = document.querySelector(".form-03")
 let form04 = document.querySelector(".form-04")
+let loadingScreen = document.querySelector(".loading-screen");
 const quizzBanner = document.querySelector(".quizz-banner");
 const headerHeight = document.querySelector("header").offsetHeight;
 
@@ -79,6 +80,8 @@ function renderAllQuizzes({data}) {
         document.getElementById(`${id}`).style.backgroundSize = "cover";
     });
 
+    loadingScreen.classList.add("none");
+    screen1.classList.remove("none");
     addClick();
 }
 
@@ -99,9 +102,8 @@ function selectedQuizz(event){
     screen3.classList.add("none")
     form04.classList.add("none")
     screen1.classList.add("none");
-    screen2.classList.remove("none");
-
-    quizzBanner.classList.remove("none");
+    loadingScreen.classList.remove("none");
+    
     console.log(event)
     console.log(event.target.id)
     if(event.target.localName === "button") elementId = event.target.previousElementSibling.id
@@ -115,7 +117,7 @@ function selectedQuizz(event){
     });
     console.log(selectedFromGlobal)
 
-    renderSelectedQuizz(selectedFromGlobal);
+    setTimeout(()=>renderSelectedQuizz(selectedFromGlobal),1500);
 }
     
 function renderSelectedQuizz({image, questions, title}){
@@ -123,8 +125,6 @@ function renderSelectedQuizz({image, questions, title}){
     quizzBanner.style.background = `url(${image})`;
     quizzBanner.style.backgroundSize = "cover";
     document.querySelector(".quizz-banner div").innerHTML = `${title}`;
-
-    windowScroller(0);
 
     const quizzContainer = document.querySelector(".quizz-container");
 
@@ -166,6 +166,10 @@ function renderSelectedQuizz({image, questions, title}){
     
     document.querySelectorAll(".answer").forEach((answer)=>answer.addEventListener('click', selectingAnswer));
 
+    loadingScreen.classList.add("none");
+    quizzBanner.classList.remove("none");
+    screen2.classList.remove("none");
+    windowScroller(0);
 }
 
 function selectingAnswer(event){
@@ -524,7 +528,13 @@ function validateForm03(){
     if(!form03.querySelector(".validate-error")) {
         createQuizzObj.levels = objLevels;
         const promess = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", createQuizzObj)
+
+        form03.classList.add("none");
+        screen3.classList.add("none");
+        loadingScreen.classList.remove("none");
+
         promess.then(promess.then( (answer) =>{
+            loadingScreen.classList.add("none");
             console.log(answer)
             if(quizzesLocalStorage === null) parseQuizzesLocalStorage = []
             parseQuizzesLocalStorage.push(answer.data.id)

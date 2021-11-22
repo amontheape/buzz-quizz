@@ -27,8 +27,17 @@
     </div>
 
     <main>
-      <div class="screen-1">
-        <div class="no-quizzes ">
+      <div class="loading-screen">
+        <div class="spinner">
+          <div class="load">
+            <div></div>
+          </div>
+        </div>
+        <span>Carregando</span>
+      </div>
+
+      <div class="screen-1 none">
+        <div class="no-quizzes">
           <h2>Você não criou nenhum quizz ainda :(</h2>
           <button onclick="createQuizz()" data-identifier="create-quizz">Criar Quizz</button>
         </div>
