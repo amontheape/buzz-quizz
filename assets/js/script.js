@@ -59,25 +59,24 @@ function renderAllQuizzes({data}) {
             yourQuizzesDiv.classList.remove('none');
 
             containerYourQuizzes.innerHTML += `
-            <li>
-            <div class="quizz-background" id="${id}">
+            <li id="${id}" data-identifier="quizz-card">
+            <div class="quizz-background" >
                 ${title}
             </div>
             </li>
             `
-            document.getElementById(`${id}`).style.background = `url(${image})`;
-
         } else {
             console.log('rendering quizz from server');
             containerAllQuizzes.innerHTML += `
-            <li>
-            <div class="quizz-background" id="${id}">
+            <li id="${id}" data-identifier="quizz-card">
+            <div class="quizz-background">
                 ${title}
             </div>
             </li>
             `
-            document.getElementById(`${id}`).style.background = `url(${image})`;
         }
+        document.getElementById(`${id}`).style.background = `url(${image})`;
+        document.getElementById(`${id}`).style.backgroundSize = "cover";
     });
 
     addClick();
@@ -88,31 +87,41 @@ function addClick() {
     let ulAllQuizzes = document.querySelectorAll(".all-quizzes li")
     
     ulYourQuizzes.forEach( (element) => {
-        element.addEventListener("click", selectedQuizz);
+        element.parentNode.addEventListener("click", selectedQuizz);
     });
     ulAllQuizzes.forEach( (element) => {
-        element.addEventListener("click", selectedQuizz);
+        element.parentNode.addEventListener("click", selectedQuizz);
     });
 }
 
 function selectedQuizz(event){
+    let elementId = event.target.parentNode.id;
+    screen3.classList.add("none")
+    form04.classList.add("none")
     screen1.classList.add("none");
     screen2.classList.remove("none");
 
     quizzBanner.classList.remove("none");
+    console.log(event)
+    console.log(event.target.id)
+    if(event.target.localName === "button") elementId = event.target.previousElementSibling.id
+
+    console.log(elementId)
 
     globalData.forEach((element)=>{
-        if (element.id == event.target.id){
+        if (element.id == elementId){
             selectedFromGlobal = element;
         }
     });
+    console.log(selectedFromGlobal)
 
     renderSelectedQuizz(selectedFromGlobal);
 }
     
 function renderSelectedQuizz({image, questions, title}){
    
-    quizzBanner.style.backgroundImage = `url(${image})`;
+    quizzBanner.style.background = `url(${image})`;
+    quizzBanner.style.backgroundSize = "cover";
     document.querySelector(".quizz-banner div").innerHTML = `${title}`;
 
     windowScroller(0);
@@ -124,7 +133,7 @@ function renderSelectedQuizz({image, questions, title}){
     questions.forEach(({title, color, answers})=>{
        
         quizzContainer.innerHTML += `
-            <div class="questions-wrapper">
+            <div class="questions-wrapper" data-identifier="general-quizzes">
                 <div class="questions-title">${title}</div>
                 <div class="answers-wrapper wrapper${i}">
 
@@ -144,7 +153,7 @@ function renderSelectedQuizz({image, questions, title}){
 
         answers.forEach(({text, image, isCorrectAnswer})=>{
             answersWrapper[i].innerHTML += `
-                <div class="answer" id='${isCorrectAnswer}'>
+                <div class="answer" id='${isCorrectAnswer}' data-identifier="answer">
                     <img src='${image}'/>
                     <span>${text}</span>
                     <div class="fade none"></div>
@@ -213,7 +222,7 @@ function concludeQuizz(wins, losses, {questions, levels}){
         });
         
         document.querySelector(".final-container").innerHTML += `
-            <div class="conclusion-wrapper">
+            <div class="conclusion-wrapper" data-identifier="quizz-result">
                 <div class="conclusion-title">${accuracy}% de acerto: ${levels[adequateLevelindex].title}</div>
                 <div class="img-description-wrapper">
                     <img src="${levels[adequateLevelindex].image}">
@@ -326,9 +335,9 @@ function createFormQuestion(idQuestion){
     form02.innerHTML += `
     <div class="question-closed ${questionClosed}" id="${idQuestion}">
         <h2>Pergunta ${numberQuestion}</h2>
-        <button onclick="selectedQuestion(this)"><ion-icon name="create-outline"></ion-icon></button>
+        <button onclick="selectedQuestion(this)" data-identifier="expand"><ion-icon name="create-outline"></ion-icon></button>
     </div>
-    <div class="question ${questionOpen}" id="${idQuestion}">
+    <div class="question ${questionOpen}" id="${idQuestion}" data-identifier="question">
         <div class="info-question">
             <h2>Pergunta ${numberQuestion}</h2>
             <div class="text"><input type="text" placeholder="Texto da pergunta"></div>
@@ -494,9 +503,9 @@ function createFormLevel(idLevel){
     form03.innerHTML += `
     <div class="level-closed ${levelClosed}" id="${idLevel}">
         <h2>Nível ${numberLevel}</h2>
-        <button onclick="selectedLevel(this)"><ion-icon name="create-outline"></ion-icon></button>
+        <button onclick="selectedLevel(this)" data-identifier="expand"><ion-icon name="create-outline" ></ion-icon></button>
     </div>
-    <div class="level ${levelOpen}" id="${idLevel}">
+    <div class="level ${levelOpen}" id="${idLevel}" data-identifier="level">
         <h2>Nível ${numberLevel}</h2>
         <div id="level-title"><input type="text" placeholder="Título do nível"></div>
         <div id="level-min"><input type="text" placeholder="% de acerto mínima"></div>
@@ -583,29 +592,25 @@ function validadeLevels(element){
 function renderForm4(id){
     console.log(createQuizzObj)
     
+    
     form04.innerHTML = `
         <h2>Seus quizz está pronto!</h2>
-        <div class="quizz-done">
-          <div class="quizz-background" id="${id}">
+        <div class="quizz-done" id="${id}">
+          <div class="quizz-background">
             ${createQuizzObj.title}
           </div>
         </div>
         <button class="button-quizz-done">Acessar Quizz</button>
         <button onclick="window.location.reload()">Voltar para home</button>
     `
-    document.querySelector(".quizz-done").style.background = `url("${createQuizzObj.image}")`
-    document.querySelector(".quizz-done").style.backgroundSize = "cover"
-
     let quizzDone = form04.querySelector(".quizz-done")
     let buttonQuizzDone = form04.querySelector(".button-quizz-done")
+    quizzDone.style.background = `url("${createQuizzObj.image}")`
+    quizzDone.style.backgroundSize = "cover"
+
     quizzDone.addEventListener("click", selectedQuizz);
     buttonQuizzDone.addEventListener("click", selectedQuizz);
 }
-// function home(){
-//     form04.classList.add("none")
-//     screen3.classList.add("none")
-//     screen1.classList.remove("none")
-// }
 function validateError(info, error, value){
     if(info.children.length === 1) info.innerHTML += error; 
     info.children[0].classList.add("validate-error")
