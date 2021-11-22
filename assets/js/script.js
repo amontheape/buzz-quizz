@@ -5,6 +5,7 @@ let form01 = document.querySelector(".form-01")
 let form02 = document.querySelector(".form-02")
 let form03 = document.querySelector(".form-03")
 const quizzBanner = document.querySelector(".quizz-banner");
+const headerHeight = document.querySelector("header").offsetHeight;
 
 let globalData =[];
 let selectedFromGlobal;
@@ -74,7 +75,7 @@ function selectedQuizz(event){
     renderSelectedQuizz(selectedFromGlobal);
 }
     
-function renderSelectedQuizz({id, image, levels, questions, title}){
+function renderSelectedQuizz({image, questions, title}){
    
     quizzBanner.style.backgroundImage = `url(${image})`;
     document.querySelector(".quizz-banner div").innerHTML = `${title}`;
@@ -128,7 +129,7 @@ function selectingAnswer(event){
 
     checkAnswer(selectedAnswer);
 
-    const wrapperIndex = selectedAnswer.parentNode.classList[1][7];
+    const wrapperIndex = Number(selectedAnswer.parentNode.classList[1][7]);
     
     document.querySelectorAll(`.wrapper${wrapperIndex} .answer`).forEach((answer)=>{
         answer.removeEventListener('click', selectingAnswer);
@@ -144,11 +145,12 @@ function selectingAnswer(event){
         }
     });
 
-    if (wrapperIndex < 2) {
+    const wrapperPos = selectedAnswer.parentNode.offsetTop;
+    const wrapperHeight = selectedAnswer.parentNode.offsetHeight;
+
+    if (wrapperIndex < selectedFromGlobal.questions.length-1) {
         setTimeout(()=>{
-        const wrapperPos = selectedAnswer.parentNode.offsetTop;
-        const wrapperHeight = selectedAnswer.parentNode.offsetHeight;
-        windowScroller(wrapperPos+wrapperHeight);
+            windowScroller(wrapperPos+wrapperHeight-headerHeight);
         },2000);
     }
 }
@@ -157,10 +159,6 @@ function checkAnswer(answer) {
     if(answer.id === 'true') {
         rightAnswers++;
     } else { wrongAnswers++; }
-
-    console.log(answer.id);
-    console.log(`respostas corretas: ${rightAnswers}`);
-    console.log(`respostas incorretas: ${wrongAnswers}`);
 
     concludeQuizz(rightAnswers, wrongAnswers, selectedFromGlobal);
 }
@@ -173,17 +171,13 @@ function concludeQuizz(wins, losses, {questions, levels}){
     if (totalAnswers === questions.length){
         let accuracy = Math.ceil((wins/totalAnswers)*100).toFixed();
 
-        console.log(`percentual de acerto: ${accuracy}`);
-
         levels.forEach((level)=>{
             if( accuracy >= Number(level.minValue)){
                 adequateLevelindex = levels.indexOf(level); 
             }
         });
-
-        console.log(Number(levels[adequateLevelindex].minValue));
         
-        document.querySelector(".quizz-container").innerHTML += `
+        document.querySelector(".final-container").innerHTML += `
             <div class="conclusion-wrapper">
                 <div class="conclusion-title">${accuracy}% de acerto: ${levels[adequateLevelindex].title}</div>
                 <div class="img-description-wrapper">
@@ -191,21 +185,40 @@ function concludeQuizz(wins, losses, {questions, levels}){
                     <p>${levels[adequateLevelindex].text}</p>
                 </div>
             </div>
+
+            <div class="reset-wrapper">
+                <button class="reset-quizz" onclick="resetQuizz()">Reiniciar Quizz</button>
+                <button class="back-home" onclick="window.location.reload()">Voltar pra home</span>
+            </div>
         `
-        // insert items bellow after validating tests
-        // <button>Reiniciar Quizz</button>
-        // <span>Voltar pra home</span>
+        const wrapperPos = document.querySelector(".conclusion-wrapper").offsetTop;
+        const finalPos = wrapperPos-2*headerHeight;
 
         setTimeout(()=>{
-            const wrapperPos = document.querySelector(".conclusion-wrapper").offsetTop;
-            const wrapperHeight = document.querySelector(".conclusion-wrapper").offsetHeight;
-            windowScroller(wrapperPos + wrapperHeight);
+            windowScroller(finalPos);
         }, 2000);
     }
 }
 
 function resetQuizz(){
+    console.log('testando');
+    rightAnswers = 0;
+    wrongAnswers = 0;
 
+    document.querySelectorAll(`.answer div`).forEach((div)=>{
+        div.classList.add('none');
+    });
+
+    document.querySelectorAll(`.answer span`).forEach((span)=>{
+        span.classList.remove('correct');
+        span.classList.remove('wrong');
+    });
+
+    document.querySelectorAll(".answer").forEach((answer)=>answer.addEventListener('click', selectingAnswer));
+
+    document.querySelector(".final-container").innerHTML = '';
+
+    windowScroller(0);
 }
 
 function createQuizz(){
@@ -441,7 +454,6 @@ function getRandom(){
     return Math.random() - 0.5;
 }
 
-listAllQuizzes();
 function windowScroller(position) {
     window.scrollTo({
         top: position,
