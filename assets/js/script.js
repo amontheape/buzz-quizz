@@ -5,6 +5,7 @@ let form01 = document.querySelector(".form-01")
 let form02 = document.querySelector(".form-02")
 let form03 = document.querySelector(".form-03")
 let form04 = document.querySelector(".form-04")
+let loadingScreen = document.querySelector(".loading-screen");
 const quizzBanner = document.querySelector(".quizz-banner");
 const headerHeight = document.querySelector("header").offsetHeight;
 
@@ -13,6 +14,10 @@ let parseQuizzesLocalStorage = JSON.parse(`${quizzesLocalStorage}`);
 
 let quizzesKeysLocalStorage = localStorage.getItem("quizzesKeys");
 let parseQuizzesKeysLocalStorage = JSON.parse(`${quizzesKeysLocalStorage}`);
+
+let quizzId 
+let index 
+let quizzKey
 
 
 let globalData =[];
@@ -23,6 +28,7 @@ let currentOpenLevel;
 let validateMinError;
 let objQuestions = [];
 let objLevels = [];
+let quizzEdit;
 let createQuizzObj = {
     title: "",
     image: "",
@@ -38,8 +44,6 @@ function listAllQuizzes() {
         renderAllQuizzes(response);
         globalData = response.data;
     });
-
-    getQuizzesPromise.catch(treatError);
 }
 
 function renderAllQuizzes({data}) {
@@ -80,7 +84,9 @@ function renderAllQuizzes({data}) {
         document.getElementById(`${id}`).style.background = `url(${image})`;
         document.getElementById(`${id}`).style.backgroundSize = "cover";
     });
-    
+
+    loadingScreen.classList.add("none");
+    if(screen3.classList.contains("none")) screen1.classList.remove("none");
     addClick();
     
 }
@@ -103,9 +109,8 @@ function selectedQuizz(event){
     screen3.classList.add("none")
     form04.classList.add("none")
     screen1.classList.add("none");
-    screen2.classList.remove("none");
-
-    quizzBanner.classList.remove("none");
+    loadingScreen.classList.remove("none");
+    
     if(event.target.localName === "button") elementId = event.target.previousElementSibling.id
 
     globalData.forEach((element)=>{
@@ -114,7 +119,7 @@ function selectedQuizz(event){
         }
     });
 
-    renderSelectedQuizz(selectedFromGlobal);
+    setTimeout(()=>renderSelectedQuizz(selectedFromGlobal),1500);
 }
     
 function renderSelectedQuizz({image, questions, title}){
@@ -122,8 +127,6 @@ function renderSelectedQuizz({image, questions, title}){
     quizzBanner.style.background = `url(${image})`;
     quizzBanner.style.backgroundSize = "cover";
     document.querySelector(".quizz-banner div").innerHTML = `${title}`;
-
-    windowScroller(0);
 
     const quizzContainer = document.querySelector(".quizz-container");
 
@@ -165,6 +168,10 @@ function renderSelectedQuizz({image, questions, title}){
     
     document.querySelectorAll(".answer").forEach((answer)=>answer.addEventListener('click', selectingAnswer));
 
+    loadingScreen.classList.add("none");
+    quizzBanner.classList.remove("none");
+    screen2.classList.remove("none");
+    windowScroller(0);
 }
 
 function selectingAnswer(event){
@@ -263,10 +270,17 @@ function resetQuizz(){
     windowScroller(0);
 }
 
-function createQuizz(){
+function createQuizz(editQuizzId){
     screen1.classList.add("none");
     screen3.classList.remove("none");
     form01.classList.remove("none")
+    if(editQuizzId !== undefined){
+        globalData.forEach((element)=>{
+            if (element.id == editQuizzId){
+                quizzEdit = element;
+            }
+        });
+    }
     renderForm1()
 }
 function renderForm1(){
@@ -274,10 +288,10 @@ function renderForm1(){
     <h2>Comece pelo começo</h2>
 
         <div class="quizz-infos">
-            <div id="quizz-title"><input type="text" placeholder="Título do seu quizz"></div>
-            <div id="quizz-img"><input type="text" placeholder="URL da imagem do seu quizz"></div>
-            <div id="quizz-questions"><input type="text" placeholder="Quantidade de perguntas do quizz"></div>
-            <div id="quizz-levels"><input type="text" placeholder="Quantidade de níveis do quizz"></div>
+            <div id="quizz-title"><input type="text" placeholder="Título do seu quizz" value="${quizzEdit ? quizzEdit.title : ""}"></div>
+            <div id="quizz-img"><input type="text" placeholder="URL da imagem do seu quizz" value="${quizzEdit ? quizzEdit.image : ""}"></div>
+            <div id="quizz-questions"><input type="text" placeholder="Quantidade de perguntas do quizz" value="${quizzEdit ? quizzEdit.questions.length : ""}"></div>
+            <div id="quizz-levels"><input type="text" placeholder="Quantidade de níveis do quizz" value="${quizzEdit ? quizzEdit.levels.length : ""}"></div>
         </div>
 
     <button onclick="validateForm01()">Prosseguir pra criar perguntas</button>
@@ -327,10 +341,14 @@ function createFormQuestion(idQuestion){
     let numberQuestion = idQuestion[2];
     let questionOpen = ""
     let questionClosed = "none"
+    let editQuestion
+    if(quizzEdit) editQuestion = quizzEdit.questions[numberQuestion-1]
+
     if(numberQuestion !== "1"){
         questionOpen = "none"
         questionClosed = ""
     }
+
     form02.innerHTML += `
     <div class="question-closed ${questionClosed}" id="${idQuestion}">
         <h2>Pergunta ${numberQuestion}</h2>
@@ -339,22 +357,22 @@ function createFormQuestion(idQuestion){
     <div class="question ${questionOpen}" id="${idQuestion}" data-identifier="question">
         <div class="info-question">
             <h2>Pergunta ${numberQuestion}</h2>
-            <div class="text"><input type="text" placeholder="Texto da pergunta"></div>
-            <div class="color"><input type="text" placeholder="Cor de fundo da pergunta"></div>
+            <div class="text"><input type="text" placeholder="Texto da pergunta" value="${editQuestion ? editQuestion.title : ""}"></div>
+            <div class="color"><input type="text" placeholder="Cor de fundo da pergunta" value="${editQuestion ? editQuestion.color : ""}"></div>
         </div>
         <div class="correct-answer">
             <h2>Resposta correta</h2>
-            <div class="answer-text" id="a01"><input type="text" placeholder="Resposta correta"></div>
-            <div class="answer-img" id="i01"><input type="text" placeholder="URL da imagem"></div>
+            <div class="answer-text" id="a01"><input type="text" placeholder="Resposta correta" value="${editQuestion ? editQuestion.answers[0].text : ""}"></div>
+            <div class="answer-img" id="i01"><input type="text" placeholder="URL da imagem" value="${editQuestion ? editQuestion.answers[0].image : ""}"></div>
         </div>
         <div class="incorrect-answers">
             <h2>Respostas incorretas</h2>
-            <div class="answer-text" id="a02"><input type="text" placeholder="Resposta incorreta 1"></div>
-            <div class="answer-img" id="i02"><input type="text" placeholder="URL da imagem 1"></div>
-            <div class="answer-text" id="a03"><input type="text" placeholder="Resposta incorreta 2"></div>
-            <div class="answer-img" id="i03"><input type="text" placeholder="URL da imagem 2"></div>
-            <div class="answer-text" id="a04"><input type="text" placeholder="Resposta incorreta 3"></div>
-            <div class="answer-img" id="i04"><input type="text" placeholder="URL da imagem 3"></div>
+            <div class="answer-text" id="a02"><input type="text" placeholder="Resposta incorreta 1" value="${editQuestion ? editQuestion.answers[1].text : ""}"></div>
+            <div class="answer-img" id="i02"><input type="text" placeholder="URL da imagem 1" value="${editQuestion ? editQuestion.answers[1].image : ""}"></div>
+            <div class="answer-text" id="a03"><input type="text" placeholder="Resposta incorreta 2" value="${editQuestion ? editQuestion.answers[2].text : ""}"></div>
+            <div class="answer-img" id="i03"><input type="text" placeholder="URL da imagem 2" value="${editQuestion ? editQuestion.answers[2].image : ""}"></div>
+            <div class="answer-text" id="a04"><input type="text" placeholder="Resposta incorreta 3" value="${editQuestion ? editQuestion.answers[3].text : ""}"></div>
+            <div class="answer-img" id="i04"><input type="text" placeholder="URL da imagem 3" value="${editQuestion ? editQuestion.answers[0].image : ""}"></div>
         </div>
     </div>
     `
@@ -495,6 +513,9 @@ function createFormLevel(idLevel){
     let numberLevel = idLevel[2];
     let levelOpen = ""
     let levelClosed = "none"
+    let editLevel
+    if(quizzEdit) editLevel = quizzEdit.levels[numberLevel-1]
+
     if(numberLevel !== "1"){
         levelOpen = "none"
         levelClosed = ""
@@ -506,10 +527,10 @@ function createFormLevel(idLevel){
     </div>
     <div class="level ${levelOpen}" id="${idLevel}" data-identifier="level">
         <h2>Nível ${numberLevel}</h2>
-        <div id="level-title"><input type="text" placeholder="Título do nível"></div>
-        <div id="level-min"><input type="text" placeholder="% de acerto mínima"></div>
-        <div id="level-img"><input type="text" placeholder="URL da imagem do nível"></div>
-        <div id="level-desc"><textarea placeholder="Descrição do nível"></textarea></div>
+        <div id="level-title"><input type="text" placeholder="Título do nível" value="${editLevel ? editLevel.title : ""}"></div>
+        <div id="level-min"><input type="text" placeholder="% de acerto mínima" value="${editLevel ? editLevel.minValue : ""}"></div>
+        <div id="level-img"><input type="text" placeholder="URL da imagem do nível" value="${editLevel ? editLevel.image : ""}"></div>
+        <div id="level-desc"><textarea placeholder="Descrição do nível">${editLevel ? editLevel.text : ""}</textarea></div>
     </div>
     `
 }
@@ -521,27 +542,43 @@ function validateForm03(){
         validadeLevels(element)
     });
     if(!form03.querySelector(".validate-error")) {
+        loadingScreen.classList.remove("none"); 
         createQuizzObj.levels = objLevels;
-        const promess = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", createQuizzObj)
-        
-        promess.then(promess.then( (answer) =>{
-            if(quizzesLocalStorage === null) parseQuizzesLocalStorage = []
-            parseQuizzesLocalStorage.push(answer.data.id)
-            quizzesLocalStorage = JSON.stringify(parseQuizzesLocalStorage)
-        
-            if(quizzesKeysLocalStorage === null) parseQuizzesKeysLocalStorage = []
-            parseQuizzesKeysLocalStorage.push(answer.data.key)
-            quizzesKeysLocalStorage = JSON.stringify(parseQuizzesKeysLocalStorage)
+        if(!quizzEdit){
+             const promess = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", createQuizzObj)
+             promess.then(promess.then( (answer) =>{
+                loadingScreen.classList.add("none");
+                
+                if(quizzesLocalStorage === null) parseQuizzesLocalStorage = []
+                parseQuizzesLocalStorage.push(answer.data.id)
+                quizzesLocalStorage = JSON.stringify(parseQuizzesLocalStorage)
             
-            localStorage.setItem("quizzes", quizzesLocalStorage);
-            localStorage.setItem("quizzesKeys", quizzesKeysLocalStorage);
-        
-            let quizzesKeys = localStorage.getItem("quizzesKeys");
-            let quizzes = localStorage.getItem("quizzes");
-            listAllQuizzes()
-            nextForm(form03, form04)
-            renderForm4(answer.data.id)
-        }))
+                if(quizzesKeysLocalStorage === null) parseQuizzesKeysLocalStorage = []
+                parseQuizzesKeysLocalStorage.push(answer.data.key)
+                quizzesKeysLocalStorage = JSON.stringify(parseQuizzesKeysLocalStorage)
+                
+                localStorage.setItem("quizzes", quizzesLocalStorage);
+                localStorage.setItem("quizzesKeys", quizzesKeysLocalStorage);
+                loadingScreen.classList.add("none"); 
+                listAllQuizzes()
+                nextForm(form03, form04)
+                renderForm4(answer.data.id)
+            }))
+        }else {
+            const promess = axios.put(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizzId}`, createQuizzObj, {
+                headers:{
+                    "Secret-Key": `${quizzKey}` 
+                }
+            })
+            promess.then((answer)=>{
+                quizzEdit = undefined;
+                loadingScreen.classList.add("none"); 
+                listAllQuizzes()
+                nextForm(form03, form04)
+                renderForm4(answer.data.id)
+            })
+            
+        }
         
     }
     objLevels = []
@@ -585,8 +622,6 @@ function validadeLevels(element){
     }
 }
 function renderForm4(id){
-    
-    
     form04.innerHTML = `
         <h2>Seus quizz está pronto!</h2>
         <div class="quizz-done" id="${id}">
@@ -640,16 +675,20 @@ function windowScroller(position) {
 }
 
 function editQuizz(element){
-    console.log(element.parentNode.parentNode.id)
+    quizzId = parseInt(element.parentNode.parentNode.id)
+    index = parseQuizzesLocalStorage.indexOf(quizzId)
+    if(index !== -1){
+        quizzKey = parseQuizzesKeysLocalStorage[index]
+    }
+    createQuizz(quizzId)
 }
 
 function removeQuizz(element){
     let r = confirm("Tem certeza ?");
     if (!r) return
 
-    let quizzId = parseInt(element.parentNode.parentNode.id)
-    let index = parseQuizzesLocalStorage.indexOf(quizzId)
-    let quizzKey
+    quizzId = parseInt(element.parentNode.parentNode.id)
+    index = parseQuizzesLocalStorage.indexOf(quizzId)
     if(index !== -1){
         quizzKey = parseQuizzesKeysLocalStorage[index]
     }
