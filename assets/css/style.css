@@ -4,14 +4,20 @@
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
-button{
+
+button {
     background: 0;
     border: 0;
     cursor: pointer;
 }
-body{
+
+body {
     background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
 header {
     position: fixed;
     top: 0;
@@ -27,14 +33,23 @@ header {
 
     color: #fff;
 }
+
 main {
+    width: 1050px;
+
     padding-bottom: 250px;
+
     display: flex;
     flex-direction: column;
     align-items: center;
 
     background-color: #fafafa;
 }
+
+.screen-1, .screen-3 {
+    margin-top: 140px;
+}
+
 .no-quizzes {
     height: 181px;
     text-align: center;
@@ -49,6 +64,7 @@ main {
     flex-direction: column;
     align-items: center;
 }
+
 .no-quizzes h2 {
     height: 107px;
     width: 250px;
@@ -58,6 +74,7 @@ main {
 
     color: #b9b9b9;
 }
+
 .no-quizzes button {
     border: 1px dashed #ec362d;
     border-radius: 50px;
@@ -71,9 +88,11 @@ main {
     color: #ec362d;
     cursor: pointer;
 }
+
 .your-quizzes {
     margin-bottom: 48px;
 }
+
 .your-quizzes > button,
 .add-quizz button {
     margin-left: 17px;
@@ -88,6 +107,7 @@ main {
     justify-content: center;
     margin-bottom: 12px;
 }
+
 .your-quizzes h2,
 .all-quizzes h2 {
     font-weight: bold;
@@ -105,21 +125,24 @@ main {
     gap: 15px;
     flex-wrap: wrap;
 }
+
 .your-quizzes li,
 .all-quizzes li,
 .quizz-done {
     list-style: none;
+
     cursor: pointer;
 
     position: relative;
 
     width: 340px;
-    height: 181px;
+    height: 180px;
     background-size: cover;
 
     border-radius: 5px;
 }
-.quizz-background{
+
+.quizz-background {
     position: absolute;
     top: 0;
     right: 0;
@@ -147,7 +170,8 @@ main {
 .add-quizz {
     display: flex;
 }
-.quizz-edits{
+
+.quizz-edits {
     position: absolute;
     top: 10px;
     right: 0;
@@ -159,10 +183,12 @@ main {
     gap: 10px;
     padding: 10px;
 }
-.quizz-edits ion-icon{
+
+.quizz-edits ion-icon {
     font-size: 25px;
     color: #fff;
 }
+
 .form-01 > button,
 .form-02 > button,
 .form-03 > button,
@@ -178,36 +204,42 @@ main {
     font-size: 21px;
     color: #FFF5F4;
 }
-.form-04 > button{
+
+.form-04 > button {
     margin-top: 45px;
 }
-.form-04 button:last-child{
+
+.form-04 button:last-child {
     margin-top: 0px;
 
     color: #818181;
     background: 0;
 }
+
 .form-01,
 .form-02,
 .form-03,
-.form-04{
+.form-04 {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 25px;
 }
+
 .form-01 > h2,
 .form-02 > h2,
 .form-03 > h2,
-.form-04 > h2{
+.form-04 > h2 {
     margin-bottom: 40px;
 }
+
 .form-04 > div {
     width: 500px;
     height: 266px;
 }
+
 .question-closed,
-.level-closed{
+.level-closed {
     width: 600px;
 
     background-color: #fff;
@@ -217,17 +249,20 @@ main {
     justify-content: space-between;
     padding: 25px 15px;
 }
+
 .question-closed ion-icon,
-.level-closed ion-icon{
+.level-closed ion-icon {
     font-size: 26px;
 }
+
 .question-closed h2,
-.level-closed h2{
+.level-closed h2 {
     font-size: 20px;
 }
+
 .quizz-infos,
 .question,
-.level{
+.level {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -238,10 +273,11 @@ main {
     background-color: #fff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
 }
+
 .quizz-infos input,
 .question input,
 .level input,
-.level textarea{
+.level textarea {
     width: 100%;
     height: 46px;
     padding-left: 23px;
@@ -252,72 +288,73 @@ main {
 
     color: #BABABA;
 }
-.level textarea{
+
+.level textarea {
     resize: none;
     padding-top: 10px;
 }
+
 .quizz-infos input::placeholder,
 .question input::placeholder,
 .level input::placeholder,
-.level textarea::placeholder{
+.level textarea::placeholder {
     font-size: 19px;
     font-style: italic;
     color: #BABABA;
 }
+
 .quizz-infos h3,
 .question h3,
-.level h3{
+.level h3 {
     font-size: 16px;
     color: #EC362D;
     font-weight: normal;
     margin-top: 3px;
 }
+
 .question,
-.level{
+.level {
     padding-top: 10px;
 }
+
 .question h2,
-.level h2{
+.level h2 {
     font-size: 20px;
     margin: 15px 0 10px;
 }
-.question > div{
+
+.question > div {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-
-.screen-1 {
-    margin-top: 146px;
-    width: 1050px;
-}
-.screen-3 {
-    margin-top: 140px;
-    width: 1050px;
-}
-.validate-error{
+.validate-error {
     background: #FFE9E9;
 }
 
 .quizz-banner{
     height: 227px;
-    width: 100%;
+    width: 100vw;
     position: relative;
     margin-top: 69px;
 }
 
-.quizz-banner>div{
+.quizz-banner > div {
     font-style: normal;
     font-size: 39px;
     line-height: 46px;
     color: #fff;
+
+    word-break: break-word;
 
     background-color: rgba(0, 0, 0, 0.57);
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    padding: 8px;
 
     position: absolute;
     top: 0;
@@ -411,7 +448,7 @@ main {
     position: relative;
 }
 
-.answer>img {
+.answer > img {
     height: 175px;
     margin-bottom: 8px;
 
@@ -428,11 +465,9 @@ main {
     z-index: 1;
 
     background-color: rgba(255, 255, 255, 0.70);
-
-
 }
 
-.answer>span {
+.answer > span {
     font-weight: 700;
     font-style: bold;
     font-size: 20px;
@@ -441,23 +476,23 @@ main {
     word-break: break-word;
 }
 
-.answer>span.correct{
+.answer > span.correct {
     color: #009C22;
 }
 
-.answer>span.wrong{
+.answer > span.wrong {
     color: #FF4B4B;
 }
 
-.img-description-wrapper>img {
+.img-description-wrapper > img {
     width: 330px;
     height: 248px;
-
+   
     object-position: center;
     object-fit: cover;
 }
 
-.img-description-wrapper>p {
+.img-description-wrapper > p {
     font-weight: 700;
     font-style: normal;
     font-size: 19px;
@@ -510,7 +545,7 @@ main {
     margin-bottom: 16px;
 }
 
-textarea{
+textarea {
     width: 250px;
     height: 54px;
     resize: none;
@@ -572,4 +607,53 @@ textarea{
 
 .none {
     display: none;
+}
+
+@media only screen and (max-width: 1100px) {
+    main, ul, .your-quizzes li,
+    .all-quizzes li, .quizz-done, .form-04 > div,
+    .level-closed, .quizz-infos, .question, .level,
+    .question-closed, .level-closed, .quizz-background,
+    .questions-wrapper, .conclusion-wrapper,
+    .conclusion-title, .questions-title, 
+    .answers-wrapper, .img-description-wrapper,
+    .screen-1, .screen-2, .screen-3, .answer > img {
+        width: 100%;
+    }
+
+    main {
+        margin: 0;
+        padding-bottom: 100px;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    .answer {
+        width: 48%;
+    }
+
+    .answer > img {
+        height: 114px;
+    }
+
+    .conclusion-title, .questions-title {
+        height: 90px;
+    }
+
+    .img-description-wrapper > img,
+    .img-description-wrapper > p {
+        width: 48%;
+    }
+
+    .screen-1 {
+        margin-top: 100px;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .screen-3 {
+        margin-top: 120px;
+    }
 }
