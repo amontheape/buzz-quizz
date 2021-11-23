@@ -227,24 +227,26 @@ function concludeQuizz(wins, losses, {questions, levels}){
             }
         });
         
-        document.querySelector(".final-container").innerHTML += `
-            <div class="conclusion-wrapper" data-identifier="quizz-result">
-                <div class="conclusion-title">${accuracy}% de acerto: ${levels[adequateLevelindex].title}</div>
-                <div class="img-description-wrapper">
-                    <img src="${levels[adequateLevelindex].image}">
-                    <p>${levels[adequateLevelindex].text}</p>
-                </div>
-            </div>
-
-            <div class="reset-wrapper">
-                <button class="reset-quizz" onclick="resetQuizz()">Reiniciar Quizz</button>
-                <button class="back-home" onclick="window.location.reload()">Voltar pra home</span>
-            </div>
-        `
-        const wrapperPos = document.querySelector(".conclusion-wrapper").offsetTop;
-        const finalPos = wrapperPos-2*headerHeight;
+        
 
         setTimeout(()=>{
+            document.querySelector(".final-container").innerHTML += `
+                <div class="conclusion-wrapper" data-identifier="quizz-result">
+                    <div class="conclusion-title">${accuracy}% de acerto: ${levels[adequateLevelindex].title}</div>
+                    <div class="img-description-wrapper">
+                        <img src="${levels[adequateLevelindex].image}">
+                        <p>${levels[adequateLevelindex].text}</p>
+                    </div>
+                </div>
+
+                <div class="reset-wrapper">
+                    <button class="reset-quizz" onclick="resetQuizz()">Reiniciar Quizz</button>
+                    <button class="back-home" onclick="window.location.reload()">Voltar pra home</span>
+                </div>
+            `
+            const wrapperPos = document.querySelector(".conclusion-wrapper").offsetTop;
+            const finalPos = wrapperPos-2*headerHeight;
+
             windowScroller(finalPos);
         }, 2000);
     }
@@ -342,13 +344,22 @@ function createFormQuestion(idQuestion){
     let questionOpen = ""
     let questionClosed = "none"
     let editQuestion
-    if(quizzEdit) editQuestion = quizzEdit.questions[numberQuestion-1]
+    if(quizzEdit){
+        
+         editQuestion = quizzEdit.questions[numberQuestion-1]
+         if (editQuestion.answers.length === 2){ 
+            editQuestion.answers.push({text:"",image:""})
+            editQuestion.answers.push({text:"",image:""})
+        }else if (editQuestion.answers.length === 3){
+            editQuestion.answers.push({text:"",image:""})
+        }
+    } 
+    
 
     if(numberQuestion !== "1"){
         questionOpen = "none"
         questionClosed = ""
     }
-
     form02.innerHTML += `
     <div class="question-closed ${questionClosed}" id="${idQuestion}">
         <h2>Pergunta ${numberQuestion}</h2>
@@ -372,7 +383,7 @@ function createFormQuestion(idQuestion){
             <div class="answer-text" id="a03"><input type="text" placeholder="Resposta incorreta 2" value="${editQuestion ? editQuestion.answers[2].text : ""}"></div>
             <div class="answer-img" id="i03"><input type="text" placeholder="URL da imagem 2" value="${editQuestion ? editQuestion.answers[2].image : ""}"></div>
             <div class="answer-text" id="a04"><input type="text" placeholder="Resposta incorreta 3" value="${editQuestion ? editQuestion.answers[3].text : ""}"></div>
-            <div class="answer-img" id="i04"><input type="text" placeholder="URL da imagem 3" value="${editQuestion ? editQuestion.answers[0].image : ""}"></div>
+            <div class="answer-img" id="i04"><input type="text" placeholder="URL da imagem 3" value="${editQuestion ? editQuestion.answers[3].image : ""}"></div>
         </div>
     </div>
     `
@@ -417,6 +428,11 @@ function validateForm02(){
     if(!document.querySelector(".validate-error")){
         nextForm(form02, form03)
         renderForm3()
+    }else{
+        document.querySelectorAll(".question").forEach((element)=>{
+            if (element.querySelector(".validate-error")) element.previousElementSibling.classList.add("validate-error")
+            else element.previousElementSibling.classList.remove("validate-error")
+        });
     }
 }
 function validadeQuestions(element){
@@ -464,7 +480,10 @@ function validadeQuestions(element){
                     noneValidateError(element.querySelector(`#i02`))
                     validateError(element.querySelector(`#a02`), "<h3>Insira na caixa certa</h3>", "")
                     validateError(element.querySelector(`#i02`), "<h3>Insira na caixa certa</h3>", "")    
-                }else if(!validURL(questionAnswersImages[i].value)) validateError(element.querySelector(`#i0${i+1}`), "<h3>O valor informado não é uma URL válida</h3>", questionAnswersImages[i].value)
+                }else{
+                    noneValidateError(element.querySelector(`#a02`))
+                    noneValidateError(element.querySelector(`#i02`))
+                    if(!validURL(questionAnswersImages[i].value)) validateError(element.querySelector(`#i0${i+1}`), "<h3>O valor informado não é uma URL válida</h3>", questionAnswersImages[i].value)
                     else{
                         noneValidateError(element.querySelector(`#i0${i+1}`))
                         if(pair){
@@ -475,6 +494,7 @@ function validadeQuestions(element){
                             })
                         }
                     }
+                }
             }else if(pair) validateError(element.querySelector(`#i0${i+1}`), "<h3>Precisa adicionar a url da imagem</h3>", questionAnswersImages[i].value)
         }
     }
