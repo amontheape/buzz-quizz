@@ -641,10 +641,15 @@ textarea {
     .conclusion-title, .questions-title {
         height: 90px;
     }
-
+    
+    .img-description-wrapper {
+        flex-direction: column;
+    }
+    
     .img-description-wrapper > img,
     .img-description-wrapper > p {
-        width: 48%;
+        width: 100%;
+        margin-bottom: 12px;
     }
 
     .screen-1 {
