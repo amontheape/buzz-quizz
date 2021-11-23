@@ -600,6 +600,11 @@ function validateForm03(){
             
         }
         
+    }else{
+        document.querySelectorAll(".level").forEach((element)=>{
+            if (element.querySelector(".validate-error")) element.previousElementSibling.classList.add("validate-error")
+            else element.previousElementSibling.classList.remove("validate-error")
+        });
     }
     objLevels = []
 }
